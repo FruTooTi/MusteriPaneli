@@ -11,12 +11,12 @@ namespace MusteriPaneli.Entities
 {
     public class Telefon : BasicAggregateRoot<Guid>
     {
-        //public Telefon(Guid id)
-        //{
-        //    Id = id;
-        //}
+        public Telefon(Guid id)
+        {
+            Id = id;
+        }
         public int TurId { get; set; }
-        public Tur<TelefonTuru, Telefon> Tur { get; set; }
+        public Tur<TelefonTuru, Telefon>? Tur { get; set; }
         public string Numara { get; set; }
         public Iletisim Iletisim { get; set; }
 

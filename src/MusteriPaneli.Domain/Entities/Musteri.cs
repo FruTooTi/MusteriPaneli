@@ -12,10 +12,10 @@ namespace MusteriPaneli.Entities
 {
     public class Musteri : AuditedAggregateRoot<Guid>
     {
-        //public Musteri(Guid id)
-        //{
-        //    Id = id;
-        //}
+        public Musteri(Guid id)
+        {
+            Id = id;
+        }
         public string Isim { get; set; }
         public string Soyisim { get; set; }
         public string TC { get; set; }

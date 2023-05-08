@@ -11,10 +11,10 @@ namespace MusteriPaneli.Entities
 {
     public class Adres : BasicAggregateRoot<Guid>
     {
-        //public Adres(Guid id)
-        //{
-        //    Id = id;
-        //}
+        public Adres(Guid id)
+        {
+            Id = id;
+        }
         public int TurId { get; set; }
         public Tur<AdresTuru, Adres> Tur { get; set; }
         public string Aciklama { get; set; }

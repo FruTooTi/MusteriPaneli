@@ -20,42 +20,19 @@ public class MusteriPaneliApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
         CreateMap<OdemeMusteri, OdemeMusteri>();
 
-        CreateMap<IletisimDto, Iletisim>()
-            .ForMember(p => p.Id, opt => opt.Ignore())
-            .AfterMap((dto, entity) =>
-            {
-                entity.SetIdIfEmpty();
-            })
-            .EqualityComparison((src, dest) => src.Id == dest.Id);
+        CreateMap<IletisimDto, Iletisim>();
 
         CreateMap<TelefonDto, Telefon>()
             .ForMember(p => p.TurId, k => k.MapFrom(l => l.Tur))
-            .ForMember(p => p.Tur, opt => opt.Ignore())
-            .ForMember(p => p.Id, opt => opt.Ignore())
-            .AfterMap((dto, entity) =>
-            {
-                entity.SetIdIfEmpty();
-            })
-            .EqualityComparison((src, dest) => src.Id == dest.Id);
+            .ForMember(p => p.Tur, opt => opt.Ignore());
 
         CreateMap<AdresDto, Adres>()
             .ForMember(p => p.TurId, k => k.MapFrom(l => l.Tur))
-            .ForMember(p => p.Tur, opt => opt.Ignore())
-            .ForMember(p => p.Id, opt => opt.Ignore())
-            .AfterMap((dto, entity) =>
-            {
-                entity.SetIdIfEmpty();
-            })
-            .EqualityComparison((src, dest) => src.Id == dest.Id);
+            .ForMember(p => p.Tur, opt => opt.Ignore());
 
         CreateMap<OdemeDto, OdemeMusteri>();
 
-        CreateMap<CreateOrUpdateMusteriDto, Musteri>()
-            .ForMember(p => p.Id, opt => opt.Ignore())
-            .AfterMap((dto, entity) =>
-            {
-                entity.SetIdIfEmpty();
-            });
+        CreateMap<CreateOrUpdateMusteriDto, Musteri>();
 
         CreateMap<Iletisim, IletisimDto>();
 

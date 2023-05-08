@@ -10,10 +10,10 @@ namespace MusteriPaneli.Entities
 {
     public class Iletisim : BasicAggregateRoot<Guid>
     {
-        //public Iletisim(Guid id)
-        //{
-        //    Id = id;
-        //}
+        public Iletisim(Guid id)
+        {
+            Id = id;
+        }
         public string Email { get; set; }
         public List<Telefon> Telefon { get; set; }
         public Musteri Musteri { get; set; }

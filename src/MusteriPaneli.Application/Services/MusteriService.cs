@@ -57,7 +57,7 @@ namespace MusteriPaneli.Services
         {
             if (input != null)
             {
-                var newMusteri = ObjectMapper.Map<CreateOrUpdateMusteriDto, Musteri>(input);
+                var newMusteri = TrySetGuid(input);
                 await _repository.InsertAsync(newMusteri);
                 CheckSiradisiMi(newMusteri);
                 return input;
@@ -102,34 +102,43 @@ namespace MusteriPaneli.Services
             return newMusteri;
         }
 
-        //private Musteri TrySetGuid(CreateOrUpdateMusteriDto newMusteri, Musteri? musteri)
-        //{
-        //    if (musteri == null)
-        //    {
-        //        musteri = new Musteri(_guidGenerator.Create());
-        //        musteri.Adres = new List<Adres>();
-        //        musteri.Iletisim = new List<Iletisim>();
-        //    }
-        //    foreach (var adresdto in newMusteri.Adres)
-        //    {
-        //        if(adresdto.Id == null)
-        //            musteri.Adres.Add(new Adres(_guidGenerator.Create()));
-        //    }
-        //    foreach (var iletisimdto in newMusteri.Iletisim)
-        //    {
-        //        if(iletisimdto.Id == null)
-        //        {
-        //            Iletisim iletisim = new Iletisim(_guidGenerator.Create());
-        //            iletisim.Telefon = new List<Telefon>();
-        //            foreach (var telefondto in iletisimdto.Telefon)
-        //            {
-        //                if(telefondto.Id == null)
-        //                    iletisim.Telefon.Add(new Telefon(_guidGenerator.Create()));
-        //            }
-        //            musteri.Iletisim.Add(iletisim);
-        //        }
-        //    }
-        //    return musteri;
-        //}
+        private Musteri TrySetGuid(CreateOrUpdateMusteriDto newMusteri)
+        {
+            Guid guid = _guidGenerator.Create();
+            Musteri musteri = new Musteri(guid);
+            musteri.Adres = new List<Adres>();
+            musteri.Iletisim = new List<Iletisim>();
+            foreach (var adresdto in newMusteri.Adres)
+            {
+                if (adresdto.Id == null)
+                {
+                    guid = _guidGenerator.Create();
+                    musteri.Adres.Add(new Adres(guid));
+                    adresdto.Id = guid;
+                }
+            }
+            foreach (var iletisimdto in newMusteri.Iletisim)
+            {
+                if (iletisimdto.Id == null)
+                {
+                    guid = _guidGenerator.Create();
+                    Iletisim iletisim = new Iletisim(guid);
+                    iletisim.Telefon = new List<Telefon>();
+                    iletisimdto.Id = guid;
+                    foreach (var telefondto in iletisimdto.Telefon)
+                    {
+                        if (telefondto.Id == null)
+                        {
+                            guid = _guidGenerator.Create();
+                            iletisim.Telefon.Add(new Telefon(_guidGenerator.Create()));
+                            telefondto.Id = guid;
+                        }
+                    }
+                    musteri.Iletisim.Add(iletisim);
+                }
+            }
+            ObjectMapper.Map(newMusteri, musteri);
+            return musteri;
+        }
     }
 }
