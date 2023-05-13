@@ -7,6 +7,7 @@ using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
@@ -29,7 +30,11 @@ namespace MusteriPaneli.Services
         {
             _repository = repository;
             _guidGenerator = guidGenerator;
-            _mapper = mapper;
+            _mapper = new Mapper(new MapperConfiguration(opt =>
+            {
+                opt.AddCollectionMappers();
+                opt.AddProfile<MusteriPaneliApplicationAutoMapperProfile>();
+            }));
         }
         public async Task<List<MusteriDto>> GetAllAsync()
         {
@@ -57,7 +62,7 @@ namespace MusteriPaneli.Services
         {
             if (input != null)
             {
-                var newMusteri = TrySetGuid(input);
+                var newMusteri = TrySetGuid(input, null);
                 await _repository.InsertAsync(newMusteri);
                 CheckSiradisiMi(newMusteri);
                 return input;
@@ -66,10 +71,10 @@ namespace MusteriPaneli.Services
         }
         public async Task<CreateOrUpdateMusteriDto> UpdateAsync(Guid id, CreateOrUpdateMusteriDto input)
         {
-            var target = await _repository.GetAsync(id, true);
+            Musteri target = await _repository.FindAsync(id);
             if (target != null)
             {
-                ObjectMapper.Map(input, target);
+                TrySetGuid(input, target);
                 await _repository.UpdateAsync(target);
                 CheckSiradisiMi(target);
                 return input;
@@ -102,12 +107,16 @@ namespace MusteriPaneli.Services
             return newMusteri;
         }
 
-        private Musteri TrySetGuid(CreateOrUpdateMusteriDto newMusteri)
+        private Musteri TrySetGuid(CreateOrUpdateMusteriDto newMusteri, Musteri? musteri)
         {
-            Guid guid = _guidGenerator.Create();
-            Musteri musteri = new Musteri(guid);
-            musteri.Adres = new List<Adres>();
-            musteri.Iletisim = new List<Iletisim>();
+            Guid guid;
+            if(musteri == null)
+            {
+                guid = _guidGenerator.Create();
+                musteri = new Musteri(guid);
+                musteri.Adres = new List<Adres>();
+                musteri.Iletisim = new List<Iletisim>();
+            }
             foreach (var adresdto in newMusteri.Adres)
             {
                 if (adresdto.Id == null)
@@ -136,8 +145,21 @@ namespace MusteriPaneli.Services
                     }
                     musteri.Iletisim.Add(iletisim);
                 }
+                else
+                {
+                    Iletisim telefonList = musteri.Iletisim.Find(cond => cond.Id == iletisimdto.Id);
+                    foreach (var telefondto in iletisimdto.Telefon)
+                    {
+                        if (telefondto.Id == null)
+                        {
+                            guid = _guidGenerator.Create();
+                            telefonList.Telefon.Add(new Telefon(_guidGenerator.Create()));
+                            telefondto.Id = guid;
+                        }
+                    }
+                }
             }
-            ObjectMapper.Map(newMusteri, musteri);
+            _mapper.Map(newMusteri, musteri);
             return musteri;
         }
     }

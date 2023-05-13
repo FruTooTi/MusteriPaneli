@@ -12,7 +12,6 @@ namespace MusteriPaneli;
 
 public class MusteriPaneliApplicationAutoMapperProfile : Profile
 {
-    public int Config1 { get; set; }
     public MusteriPaneliApplicationAutoMapperProfile()
     {
         /* You can configure your AutoMapper mapping configuration here.
@@ -20,15 +19,18 @@ public class MusteriPaneliApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
         CreateMap<OdemeMusteri, OdemeMusteri>();
 
-        CreateMap<IletisimDto, Iletisim>();
+        CreateMap<IletisimDto, Iletisim>()
+            .EqualityComparison((src, dest) => src.Id == dest.Id);
 
         CreateMap<TelefonDto, Telefon>()
             .ForMember(p => p.TurId, k => k.MapFrom(l => l.Tur))
-            .ForMember(p => p.Tur, opt => opt.Ignore());
+            .ForMember(p => p.Tur, opt => opt.Ignore())
+            .EqualityComparison((src, dest) => src.Id == dest.Id);
 
         CreateMap<AdresDto, Adres>()
             .ForMember(p => p.TurId, k => k.MapFrom(l => l.Tur))
-            .ForMember(p => p.Tur, opt => opt.Ignore());
+            .ForMember(p => p.Tur, opt => opt.Ignore())
+            .EqualityComparison((src, dest) => src.Id == dest.Id);
 
         CreateMap<OdemeDto, OdemeMusteri>();
 

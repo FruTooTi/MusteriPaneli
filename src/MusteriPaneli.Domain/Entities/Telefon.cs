@@ -16,7 +16,7 @@ namespace MusteriPaneli.Entities
             Id = id;
         }
         public int TurId { get; set; }
-        public Tur<TelefonTuru, Telefon>? Tur { get; set; }
+        public Tur<TelefonTuru, Telefon> Tur { get; set; }
         public string Numara { get; set; }
         public Iletisim Iletisim { get; set; }
 

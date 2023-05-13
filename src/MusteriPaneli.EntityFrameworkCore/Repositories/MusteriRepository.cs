@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using MusteriPaneli.Entities;
 using MusteriPaneli.EntityFrameworkCore;
 using MusteriPaneli.Interfaces;
@@ -18,7 +19,7 @@ namespace MusteriPaneli.Repositories
         public MusteriRepository(IDbContextProvider<MusteriPaneliDbContext> context): base(context) 
         { 
         }
-        //public async override Task<Musteri> InsertAsync(Musteri entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        //public async override Task<Musteri> UpdateAsync(Musteri entity, bool autoSave = false, CancellationToken cancellationToken = default)
         //{
         //    foreach (var adres in entity.Adres)
         //    {
@@ -32,25 +33,13 @@ namespace MusteriPaneli.Repositories
         //        }
         //        base.TrySetGuidId(iletisim);
         //    }
-        //    await base.InsertAsync(entity, autoSave, cancellationToken);
+        //    await base.UpdateAsync(entity, autoSave, cancellationToken);
         //    return entity;
         //}
-        public async override Task<Musteri> UpdateAsync(Musteri entity, bool autoSave = false, CancellationToken cancellationToken = default)
-        {
-            foreach (var adres in entity.Adres)
-            {
-                base.TrySetGuidId(adres);
-            }
-            foreach (var iletisim in entity.Iletisim)
-            {
-                foreach (var telefon in iletisim.Telefon)
-                {
-                    base.TrySetGuidId(telefon);
-                }
-                base.TrySetGuidId(iletisim);
-            }
-            await base.UpdateAsync(entity, autoSave, cancellationToken);
-            return entity;
-        }
+        //public async override Task<Musteri> UpdateAsync(Musteri entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        //{
+        //    DbContext.musteriler.Update(entity);
+        //    return entity;
+        //}
     }
 }
